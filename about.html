@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About and Terms · GIS Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root{
+  --bg:#ECEFF3; --surface:#F7F8FA; --ink:#14213A; --ink-2:#505D76; --rule:#CDD3DC; --focus:#2D5BD0; --accent:#B07F00;
+  --f-display:"Archivo","Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR","Nirmala UI","Kohinoor Devanagari","Noto Sans Devanagari",sans-serif;
+  --f-body:"Source Serif 4",Georgia,"PingFang SC","Microsoft YaHei","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR","Nirmala UI","Kohinoor Devanagari","Noto Sans Devanagari",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0C131F;--surface:#131C2B;--ink:#E4E9F1;--ink-2:#9DA9BD;--rule:#283449;--focus:#86A6FF;--accent:#F6C232;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0C131F;--surface:#131C2B;--ink:#E4E9F1;--ink-2:#9DA9BD;--rule:#283449;--focus:#86A6FF;--accent:#F6C232;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;
+  padding:28px max(16px,env(safe-area-inset-left,0px)) 64px max(16px,env(safe-area-inset-right,0px));-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+a{color:inherit;text-underline-offset:2px}
+.wrap{max-width:760px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:8px}
+.eyebrow{margin:0;font-family:var(--f-display);font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+h1{margin:6px 0 0;font-family:var(--f-display);font-size:clamp(30px,5vw,46px);font-weight:800;font-stretch:120%;line-height:1.05;letter-spacing:-.015em}
+html[lang="hi"] h1{line-height:1.25} html[lang="hi"] .eyebrow{letter-spacing:0}
+html[lang="ko"] body{word-break:keep-all}
+.lang{position:relative;display:inline-block}
+.lang select{appearance:none;-webkit-appearance:none;font:600 13px var(--f-display);color:var(--ink);background:var(--surface);border:1px solid var(--rule);
+  border-radius:999px;height:41px;padding:0 38px 0 16px;cursor:pointer}
+.lang::after{content:"";position:absolute;right:16px;top:50%;width:7px;height:7px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);
+  transform:translateY(-70%) rotate(45deg);pointer-events:none}
+h2{font-family:var(--f-display);font-size:21px;font-weight:700;margin:30px 0 6px}
+p,li{margin:0 0 10px;color:var(--ink)} ul{padding-left:1.2em;margin:0 0 10px}
+.note{color:var(--ink-2);font-size:15px}
+.box{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px;margin:16px 0}
+.back{font-family:var(--f-display);font-weight:600;font-size:14px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow"><a class="back" href="./" id="t-back">← GIS Labs</a></p>
+      <h1 id="t-h1">About and terms of use</h1>
+    </div>
+    <label class="lang"><select id="lang-select" aria-label="Language">
+      <option value="en">English</option><option value="zh">中文</option><option value="es">Español</option>
+      <option value="fr">Français</option><option value="ko">한국어</option><option value="hi">हिन्दी</option>
+    </select></label>
+  </header>
+  <main id="body"></main>
+</div>
+
+<script>
+'use strict';
+const C = {
+  repo: 'https://github.com/zyang398/gis-labs', issues: 'https://github.com/zyang398/gis-labs/issues',
+};
+/* Each language: h1, back, and the sections as [heading, html]. English is the reference text. */
+const L = {
+en: { h1: 'About and terms of use', back: '← GIS Labs', updated: 'Last updated 28 October 2026. If a translation differs from the English text, the English text applies.', s: [
+['About this site', `<p>GIS Labs is a personal, non-commercial project by Zhongyu Yang. I made these interactive labs and narrated animations in my own time to help students understand GIS by trying things out: coordinate systems and projections, attribute tables and joins, spatial analysis and linear referencing.</p>
+<p>It is not official course material, and it is not affiliated with, sponsored by or endorsed by Georgia Tech, the Georgia Department of Transportation (GDOT), Esri or any other organization. The views and any mistakes are my own.</p>`],
+['Data', `<div class="box"><p><b>The crashes and horizontal curves on these pages are synthetic.</b> They were generated by a program for teaching and do not describe any real crash, person, vehicle or curve record. Any resemblance to a real event is coincidental.</p></div>
+<p>The base layers are public data, simplified for the web and possibly out of date: GDOT state-route centerlines, U.S. Census Bureau county boundaries (via us-atlas), FEMA National Risk Index county attributes, and Natural Earth world outlines.</p>`],
+['Not for real-world decisions', `<p>These pages are for learning only. Do not use them, their data or their results for engineering design, safety analysis or decisions, navigation, legal, financial or any other real-world purpose.</p>`],
+['No warranty', `<p>Everything here is provided "as is", without warranty of any kind. I do not guarantee that it is accurate, complete or available, and I am not liable for any loss or damage arising from its use.</p>`],
+['Translations, narration and AI assistance', `<p>The versions in languages other than English were translated with the help of AI and have been only partly reviewed. The narration is generated with Microsoft neural text-to-speech, and parts of the code and text were written with AI assistance. Please report errors.</p>`],
+['Trademarks', `<p>ArcGIS, ArcGIS Pro and ArcMap are trademarks of Esri. Other names belong to their owners. They are mentioned only to refer to the software being taught.</p>`],
+['Using and sharing these pages', `<ul>
+<li>You may view and use these pages free of charge for personal learning and for non-commercial teaching, for example showing them in class or linking to them from a course page.</li>
+<li>Linking to any page needs no permission.</li>
+<li><b>Commercial use is not permitted</b> without my written permission.</li>
+<li><b>Reposting, mirroring, redistributing, translating or adapting</b> any page, video, image or code, in whole or in part, <b>requires telling me first</b> (see Contact). Please credit "GIS Labs by Zhongyu Yang (gis.zhongyuyang.com)" and link to the original page.</li>
+</ul><p>© 2026 Zhongyu Yang. All rights not expressly granted here are reserved.</p>`],
+['Third-party software and fonts', `<p>The pages use d3 and TopoJSON (ISC license), three.js and Turf (MIT license), and the Archivo, Source Serif 4 and IBM Plex Mono fonts (SIL Open Font License); Natural Earth data is in the public domain and us-atlas is ISC-licensed. Those licenses apply to those components.</p>`],
+['Privacy', `<p>There are no accounts, cookies, analytics or ads. Your language choice is stored only in your own browser. The pages load fonts from Google Fonts and code libraries from cdnjs, and the site is hosted on GitHub Pages; like any web request, those services receive your IP address.</p>`],
+['Contact', `<p>To report an error or to tell me before you repost or adapt something, please open an issue at <a href="${C.issues}" target="_blank" rel="noopener">github.com/zyang398/gis-labs/issues</a>.</p>`],
+]},
+zh: { h1: '关于与使用条款', back: '← GIS Labs', updated: '最后更新：2026 年 10 月 28 日。译文与英文不一致时，以英文为准。', s: [
+['关于本站', `<p>GIS Labs 是 Zhongyu Yang 的个人非商业项目。这些交互实验室和配音动画是我利用业余时间做的，目的是帮助学生通过动手操作理解 GIS：坐标系统与投影、属性表与连接、空间分析和线性参考。</p>
+<p>本站不是官方课程材料，与佐治亚理工学院（Georgia Tech）、佐治亚州交通厅（GDOT）、Esri 或任何其他机构没有隶属、赞助或背书关系。观点和错误均由我个人负责。</p>`],
+['数据', `<div class="box"><p><b>页面中的事故和平曲线都是合成数据。</b>它们由程序生成，仅用于教学，不对应任何真实的事故、人员、车辆或弯道记录。如与真实事件相似，纯属巧合。</p></div>
+<p>底图图层为公开数据，已为网页做了简化，可能不是最新：GDOT 州道中心线、美国人口普查局县界（经 us-atlas）、FEMA 国家风险指数的县属性，以及 Natural Earth 世界轮廓。</p>`],
+['不用于实际决策', `<p>本站仅供学习。请勿将页面、数据或结果用于工程设计、安全分析或决策、导航、法律、财务或任何其他实际用途。</p>`],
+['免责声明', `<p>所有内容按“现状”提供，不作任何形式的保证。我不保证其准确、完整或持续可用，对因使用本站而产生的任何损失或损害不承担责任。</p>`],
+['翻译、配音与 AI 辅助', `<p>英文以外的语言版本借助 AI 翻译，只经过部分校对。配音由 Microsoft 神经网络语音合成生成，部分代码和文字在 AI 辅助下完成。发现错误欢迎指出。</p>`],
+['商标', `<p>ArcGIS、ArcGIS Pro 和 ArcMap 是 Esri 的商标，其他名称归各自所有者所有，提及它们只是为了指代所教授的软件。</p>`],
+['使用与转载', `<ul>
+<li>个人学习和非商业教学可以免费查看和使用本站，例如在课堂上展示，或在课程页面上加链接。</li>
+<li>链接到任何页面都无需许可。</li>
+<li>未经我书面许可，<b>不得用于商业用途</b>。</li>
+<li>转载、镜像、再分发、翻译或改编任何页面、视频、图片或代码（全部或部分），<b>需事先告知我</b>（见“联系方式”），并注明“GIS Labs by Zhongyu Yang (gis.zhongyuyang.com)”和原页面链接。</li>
+</ul><p>© 2026 Zhongyu Yang。保留未明确授予的一切权利。</p>`],
+['第三方软件与字体', `<p>页面使用了 d3 和 TopoJSON（ISC 许可）、three.js 和 Turf（MIT 许可），以及 Archivo、Source Serif 4、IBM Plex Mono 字体（SIL 开放字体许可）；Natural Earth 数据属于公有领域，us-atlas 采用 ISC 许可。这些组件适用其各自的许可。</p>`],
+['隐私', `<p>本站没有账户、Cookie、统计分析或广告。你选择的语言只保存在你自己的浏览器里。页面从 Google Fonts 加载字体、从 cdnjs 加载代码库，网站托管在 GitHub Pages；和任何网页请求一样，这些服务会收到你的 IP 地址。</p>`],
+['联系方式', `<p>报告错误，或在转载、改编前告知我，请在 <a href="${C.issues}" target="_blank" rel="noopener">github.com/zyang398/gis-labs/issues</a> 提交 issue。</p>`],
+]},
+es: { h1: 'Acerca de y condiciones de uso', back: '← GIS Labs', updated: 'Última actualización: 28 de octubre de 2026. Si una traducción difiere del texto en inglés, prevalece el texto en inglés.', s: [
+['Acerca de este sitio', `<p>GIS Labs es un proyecto personal y sin fines comerciales de Zhongyu Yang. Hice estos laboratorios interactivos y animaciones narradas en mi tiempo libre para ayudar a los estudiantes a entender los SIG probando las cosas: sistemas de coordenadas y proyecciones, tablas de atributos y uniones, análisis espacial y referenciación lineal.</p>
+<p>No es material oficial de ningún curso y no está afiliado, patrocinado ni respaldado por Georgia Tech, el Departamento de Transporte de Georgia (GDOT), Esri ni ninguna otra organización. Las opiniones y los errores son míos.</p>`],
+['Datos', `<div class="box"><p><b>Los accidentes y las curvas horizontales de estas páginas son sintéticos.</b> Fueron generados por un programa con fines didácticos y no describen ningún accidente, persona, vehículo ni registro de curva real. Cualquier parecido con un hecho real es coincidencia.</p></div>
+<p>Las capas base son datos públicos, simplificados para la web y posiblemente desactualizados: ejes de las rutas estatales de GDOT, límites de condados de la Oficina del Censo de EE. UU. (vía us-atlas), atributos por condado del National Risk Index de FEMA y contornos mundiales de Natural Earth.</p>`],
+['No apto para decisiones reales', `<p>Estas páginas son solo para aprender. No use las páginas, sus datos ni sus resultados para diseño de ingeniería, análisis o decisiones de seguridad, navegación ni para fines legales, financieros o de cualquier otro tipo en el mundo real.</p>`],
+['Sin garantía', `<p>Todo se ofrece "tal cual", sin garantía de ningún tipo. No garantizo que sea exacto, completo ni que esté disponible, y no me hago responsable de ninguna pérdida o daño derivado de su uso.</p>`],
+['Traducciones, narración y ayuda de IA', `<p>Las versiones en idiomas distintos del inglés se tradujeron con ayuda de IA y solo se han revisado en parte. La narración se genera con la síntesis de voz neuronal de Microsoft, y partes del código y del texto se escribieron con ayuda de IA. Le agradezco que me informe de los errores.</p>`],
+['Marcas comerciales', `<p>ArcGIS, ArcGIS Pro y ArcMap son marcas comerciales de Esri. Los demás nombres pertenecen a sus respectivos dueños. Se mencionan solo para referirse al software que se enseña.</p>`],
+['Uso y difusión', `<ul>
+<li>Puede ver y usar estas páginas gratis para el aprendizaje personal y la enseñanza sin fines comerciales, por ejemplo, mostrarlas en clase o enlazarlas desde la página de un curso.</li>
+<li>Enlazar a cualquier página no requiere permiso.</li>
+<li><b>No se permite el uso comercial</b> sin mi permiso por escrito.</li>
+<li><b>Volver a publicar, replicar, redistribuir, traducir o adaptar</b> cualquier página, video, imagen o código, total o parcialmente, <b>requiere avisarme antes</b> (vea Contacto). Cite "GIS Labs by Zhongyu Yang (gis.zhongyuyang.com)" y enlace a la página original.</li>
+</ul><p>© 2026 Zhongyu Yang. Se reservan todos los derechos no concedidos expresamente aquí.</p>`],
+['Software y fuentes de terceros', `<p>Las páginas usan d3 y TopoJSON (licencia ISC), three.js y Turf (licencia MIT) y las fuentes Archivo, Source Serif 4 e IBM Plex Mono (SIL Open Font License); los datos de Natural Earth son de dominio público y us-atlas tiene licencia ISC. Esas licencias se aplican a esos componentes.</p>`],
+['Privacidad', `<p>No hay cuentas, cookies, analíticas ni anuncios. El idioma que elija se guarda solo en su propio navegador. Las páginas cargan fuentes de Google Fonts y bibliotecas de código de cdnjs, y el sitio está alojado en GitHub Pages; como en cualquier solicitud web, esos servicios reciben su dirección IP.</p>`],
+['Contacto', `<p>Para informar de un error o avisarme antes de volver a publicar o adaptar algo, abra un issue en <a href="${C.issues}" target="_blank" rel="noopener">github.com/zyang398/gis-labs/issues</a>.</p>`],
+]},
+fr: { h1: 'À propos et conditions d’utilisation', back: '← GIS Labs', updated: 'Dernière mise à jour : 28 octobre 2026. En cas de divergence entre une traduction et le texte anglais, le texte anglais fait foi.', s: [
+['À propos de ce site', `<p>GIS Labs est un projet personnel et non commercial de Zhongyu Yang. J’ai réalisé ces travaux pratiques interactifs et ces animations commentées sur mon temps libre pour aider les étudiants à comprendre les SIG en manipulant : systèmes de coordonnées et projections, tables attributaires et jointures, analyse spatiale et référencement linéaire.</p>
+<p>Ce n’est pas un support de cours officiel, et le site n’est ni affilié, ni parrainé, ni approuvé par Georgia Tech, le Département des transports de Géorgie (GDOT), Esri ou toute autre organisation. Les opinions et les erreurs éventuelles sont les miennes.</p>`],
+['Données', `<div class="box"><p><b>Les accidents et les courbes horizontales de ces pages sont synthétiques.</b> Ils ont été générés par un programme à des fins pédagogiques et ne décrivent aucun accident, aucune personne, aucun véhicule ni aucune courbe réels. Toute ressemblance avec un événement réel est fortuite.</p></div>
+<p>Les couches de fond sont des données publiques, simplifiées pour le web et peut-être pas à jour : axes des routes d’État du GDOT, limites des comtés du Bureau du recensement des États-Unis (via us-atlas), attributs par comté du National Risk Index de la FEMA et contours du monde de Natural Earth.</p>`],
+['Pas pour des décisions réelles', `<p>Ces pages servent uniquement à apprendre. N’utilisez ni les pages, ni leurs données, ni leurs résultats pour la conception technique, l’analyse ou les décisions de sécurité, la navigation, ou à des fins juridiques, financières ou toute autre fin réelle.</p>`],
+['Absence de garantie', `<p>Tout est fourni « en l’état », sans garantie d’aucune sorte. Je ne garantis ni l’exactitude, ni l’exhaustivité, ni la disponibilité, et je décline toute responsabilité pour les pertes ou dommages résultant de leur utilisation.</p>`],
+['Traductions, narration et aide de l’IA', `<p>Les versions autres que l’anglais ont été traduites avec l’aide de l’IA et n’ont été que partiellement relues. La narration est produite par la synthèse vocale neuronale de Microsoft, et une partie du code et des textes a été écrite avec l’aide de l’IA. Merci de signaler les erreurs.</p>`],
+['Marques', `<p>ArcGIS, ArcGIS Pro et ArcMap sont des marques d’Esri. Les autres noms appartiennent à leurs propriétaires. Ils ne sont cités que pour désigner les logiciels enseignés.</p>`],
+['Utilisation et partage', `<ul>
+<li>Vous pouvez consulter et utiliser ces pages gratuitement pour votre apprentissage personnel et pour un enseignement non commercial, par exemple les montrer en cours ou les mettre en lien depuis la page d’un cours.</li>
+<li>Créer un lien vers une page ne nécessite aucune autorisation.</li>
+<li><b>Toute utilisation commerciale est interdite</b> sans mon autorisation écrite.</li>
+<li><b>Republier, créer un miroir, redistribuer, traduire ou adapter</b> une page, une vidéo, une image ou du code, en tout ou en partie, <b>nécessite de me prévenir au préalable</b> (voir Contact). Merci de citer « GIS Labs by Zhongyu Yang (gis.zhongyuyang.com) » avec un lien vers la page d’origine.</li>
+</ul><p>© 2026 Zhongyu Yang. Tous les droits non expressément accordés ici sont réservés.</p>`],
+['Logiciels et polices tiers', `<p>Les pages utilisent d3 et TopoJSON (licence ISC), three.js et Turf (licence MIT) ainsi que les polices Archivo, Source Serif 4 et IBM Plex Mono (SIL Open Font License) ; les données Natural Earth sont dans le domaine public et us-atlas est sous licence ISC. Ces licences s’appliquent à ces composants.</p>`],
+['Confidentialité', `<p>Il n’y a ni compte, ni cookie, ni outil de mesure d’audience, ni publicité. La langue choisie est enregistrée uniquement dans votre navigateur. Les pages chargent des polices depuis Google Fonts et des bibliothèques depuis cdnjs, et le site est hébergé sur GitHub Pages ; comme pour toute requête web, ces services reçoivent votre adresse IP.</p>`],
+['Contact', `<p>Pour signaler une erreur ou me prévenir avant de republier ou d’adapter un contenu, ouvrez une issue sur <a href="${C.issues}" target="_blank" rel="noopener">github.com/zyang398/gis-labs/issues</a>.</p>`],
+]},
+ko: { h1: '소개 및 이용 약관', back: '← GIS Labs', updated: '최종 업데이트: 2026년 10월 28일. 번역문과 영어 원문이 다를 경우 영어 원문이 우선합니다.', s: [
+['이 사이트에 대하여', `<p>GIS Labs는 Zhongyu Yang의 개인적이고 비상업적인 프로젝트입니다. 학생들이 직접 해 보면서 GIS를 이해하도록 돕기 위해 여가 시간에 이 인터랙티브 실습과 내레이션 애니메이션을 만들었습니다. 좌표계와 투영, 속성 테이블과 조인, 공간 분석, 선형 참조를 다룹니다.</p>
+<p>공식 강의 자료가 아니며, Georgia Tech, 조지아주 교통국(GDOT), Esri 또는 다른 어떤 기관과도 제휴, 후원, 보증 관계가 없습니다. 의견과 오류는 모두 저의 것입니다.</p>`],
+['데이터', `<div class="box"><p><b>이 페이지의 사고와 평면 곡선은 합성 데이터입니다.</b> 교육용으로 프로그램이 생성한 것이며, 실제 사고, 사람, 차량 또는 곡선 기록을 나타내지 않습니다. 실제 사건과 비슷하더라도 우연입니다.</p></div>
+<p>배경 레이어는 공개 데이터이며 웹용으로 단순화되어 최신이 아닐 수 있습니다. GDOT 주도로 중심선, 미국 인구조사국 카운티 경계(us-atlas 경유), FEMA National Risk Index 카운티 속성, Natural Earth 세계 윤곽을 사용합니다.</p>`],
+['실제 의사결정용이 아님', `<p>이 페이지는 학습용입니다. 페이지, 데이터, 결과를 공학 설계, 안전 분석이나 의사결정, 내비게이션, 법률, 재무 또는 그 밖의 실제 목적에 사용하지 마십시오.</p>`],
+['보증 없음', `<p>모든 내용은 어떠한 보증도 없이 "있는 그대로" 제공됩니다. 정확성, 완전성, 이용 가능성을 보장하지 않으며, 사용으로 인해 발생하는 손실이나 손해에 대해 책임지지 않습니다.</p>`],
+['번역, 내레이션, AI 지원', `<p>영어 이외의 언어판은 AI의 도움으로 번역되었고 일부만 검토되었습니다. 내레이션은 Microsoft 신경망 음성 합성으로 생성했으며, 코드와 글의 일부는 AI의 도움을 받아 작성했습니다. 오류를 알려 주시면 감사하겠습니다.</p>`],
+['상표', `<p>ArcGIS, ArcGIS Pro, ArcMap은 Esri의 상표입니다. 그 밖의 이름은 각 소유자의 것이며, 가르치는 소프트웨어를 가리키기 위해서만 언급합니다.</p>`],
+['이용 및 공유', `<ul>
+<li>개인 학습과 비상업적 교육 목적으로 이 페이지를 무료로 보고 사용할 수 있습니다. 예를 들어 수업에서 보여 주거나 강의 페이지에 링크할 수 있습니다.</li>
+<li>어느 페이지든 링크하는 데에는 허락이 필요 없습니다.</li>
+<li>저의 서면 허락 없이 <b>상업적으로 이용할 수 없습니다</b>.</li>
+<li>페이지, 동영상, 이미지 또는 코드의 전부나 일부를 <b>다시 게시, 미러링, 재배포, 번역 또는 수정하려면 미리 저에게 알려 주어야 합니다</b>(연락처 참조). "GIS Labs by Zhongyu Yang (gis.zhongyuyang.com)"을 표기하고 원래 페이지에 링크해 주십시오.</li>
+</ul><p>© 2026 Zhongyu Yang. 여기에서 명시적으로 허락하지 않은 모든 권리를 보유합니다.</p>`],
+['제3자 소프트웨어와 글꼴', `<p>이 페이지는 d3와 TopoJSON(ISC 라이선스), three.js와 Turf(MIT 라이선스), Archivo, Source Serif 4, IBM Plex Mono 글꼴(SIL Open Font License)을 사용합니다. Natural Earth 데이터는 퍼블릭 도메인이며 us-atlas는 ISC 라이선스입니다. 해당 구성 요소에는 각 라이선스가 적용됩니다.</p>`],
+['개인정보', `<p>계정, 쿠키, 분석 도구, 광고가 없습니다. 선택한 언어는 사용자의 브라우저에만 저장됩니다. 페이지는 Google Fonts에서 글꼴을, cdnjs에서 코드 라이브러리를 불러오며, 사이트는 GitHub Pages에서 호스팅됩니다. 다른 웹 요청과 마찬가지로 이 서비스들은 사용자의 IP 주소를 받습니다.</p>`],
+['연락처', `<p>오류를 알리거나, 다시 게시하거나 수정하기 전에 알려 주시려면 <a href="${C.issues}" target="_blank" rel="noopener">github.com/zyang398/gis-labs/issues</a>에 issue를 등록해 주십시오.</p>`],
+]},
+hi: { h1: 'परिचय और उपयोग की शर्तें', back: '← GIS Labs', updated: 'अंतिम अपडेट: 28 अक्टूबर 2026। यदि अनुवाद और अंग्रेज़ी पाठ में अंतर हो, तो अंग्रेज़ी पाठ मान्य होगा।', s: [
+['इस साइट के बारे में', `<p>GIS Labs, Zhongyu Yang की एक निजी और गैर-व्यावसायिक परियोजना है। मैंने ये इंटरैक्टिव लैब और वर्णित एनिमेशन अपने खाली समय में बनाए हैं, ताकि छात्र खुद करके GIS समझ सकें: निर्देशांक प्रणाली और प्रक्षेप, एट्रिब्यूट टेबल और जॉइन, स्थानिक विश्लेषण और लीनियर रेफ़रेंसिंग।</p>
+<p>यह किसी पाठ्यक्रम की आधिकारिक सामग्री नहीं है, और यह Georgia Tech, जॉर्जिया परिवहन विभाग (GDOT), Esri या किसी अन्य संस्था से संबद्ध, प्रायोजित या समर्थित नहीं है। विचार और कोई भी त्रुटि मेरी अपनी है।</p>`],
+['डेटा', `<div class="box"><p><b>इन पृष्ठों पर दुर्घटनाएँ और क्षैतिज कर्व सिंथेटिक हैं।</b> इन्हें शिक्षण के लिए एक प्रोग्राम ने बनाया है; ये किसी वास्तविक दुर्घटना, व्यक्ति, वाहन या कर्व रिकॉर्ड का वर्णन नहीं करते। किसी वास्तविक घटना से समानता संयोग मात्र है।</p></div>
+<p>आधार परतें सार्वजनिक डेटा हैं, वेब के लिए सरल की गई हैं और पुरानी हो सकती हैं: GDOT स्टेट-रूट सेंटरलाइन, अमेरिकी जनगणना ब्यूरो की काउंटी सीमाएँ (us-atlas के माध्यम से), FEMA National Risk Index की काउंटी विशेषताएँ, और Natural Earth की विश्व रूपरेखा।</p>`],
+['वास्तविक निर्णयों के लिए नहीं', `<p>ये पृष्ठ केवल सीखने के लिए हैं। इन पृष्ठों, इनके डेटा या परिणामों का उपयोग इंजीनियरिंग डिज़ाइन, सुरक्षा विश्लेषण या निर्णय, नेविगेशन, कानूनी, वित्तीय या किसी अन्य वास्तविक उद्देश्य के लिए न करें।</p>`],
+['कोई वारंटी नहीं', `<p>सब कुछ "जैसा है" के आधार पर, बिना किसी वारंटी के दिया गया है। मैं इसकी सटीकता, पूर्णता या उपलब्धता की गारंटी नहीं देता, और इसके उपयोग से होने वाली किसी भी हानि या क्षति के लिए उत्तरदायी नहीं हूँ।</p>`],
+['अनुवाद, वर्णन और AI सहायता', `<p>अंग्रेज़ी के अलावा अन्य भाषाओं के संस्करण AI की सहायता से अनुवादित हैं और उनकी केवल आंशिक समीक्षा हुई है। वर्णन (नैरेशन) Microsoft के न्यूरल टेक्स्ट-टू-स्पीच से बनाया गया है, और कोड व पाठ के कुछ हिस्से AI की सहायता से लिखे गए हैं। कृपया त्रुटियों की सूचना दें।</p>`],
+['ट्रेडमार्क', `<p>ArcGIS, ArcGIS Pro और ArcMap, Esri के ट्रेडमार्क हैं। अन्य नाम उनके स्वामियों के हैं। इनका उल्लेख केवल पढ़ाए जा रहे सॉफ़्टवेयर को बताने के लिए किया गया है।</p>`],
+['उपयोग और साझा करना', `<ul>
+<li>आप इन पृष्ठों को निजी अध्ययन और गैर-व्यावसायिक शिक्षण के लिए निःशुल्क देख और उपयोग कर सकते हैं, जैसे कक्षा में दिखाना या किसी पाठ्यक्रम पृष्ठ से लिंक करना।</li>
+<li>किसी भी पृष्ठ से लिंक करने के लिए अनुमति की आवश्यकता नहीं है।</li>
+<li>मेरी लिखित अनुमति के बिना <b>व्यावसायिक उपयोग की अनुमति नहीं है</b>।</li>
+<li>किसी पृष्ठ, वीडियो, चित्र या कोड को पूरा या आंशिक रूप से <b>दोबारा प्रकाशित, मिरर, पुनर्वितरित, अनुवादित या रूपांतरित करने से पहले मुझे सूचित करना आवश्यक है</b> (संपर्क देखें)। कृपया "GIS Labs by Zhongyu Yang (gis.zhongyuyang.com)" का श्रेय दें और मूल पृष्ठ का लिंक दें।</li>
+</ul><p>© 2026 Zhongyu Yang। यहाँ स्पष्ट रूप से न दिए गए सभी अधिकार सुरक्षित हैं।</p>`],
+['तृतीय-पक्ष सॉफ़्टवेयर और फ़ॉन्ट', `<p>ये पृष्ठ d3 और TopoJSON (ISC लाइसेंस), three.js और Turf (MIT लाइसेंस), तथा Archivo, Source Serif 4 और IBM Plex Mono फ़ॉन्ट (SIL Open Font License) का उपयोग करते हैं; Natural Earth डेटा सार्वजनिक डोमेन में है और us-atlas ISC लाइसेंस के अंतर्गत है। उन घटकों पर उनके लाइसेंस लागू होते हैं।</p>`],
+['गोपनीयता', `<p>यहाँ कोई खाता, कुकी, एनालिटिक्स या विज्ञापन नहीं है। आपकी चुनी हुई भाषा केवल आपके अपने ब्राउज़र में सहेजी जाती है। पृष्ठ Google Fonts से फ़ॉन्ट और cdnjs से कोड लाइब्रेरी लोड करते हैं, और साइट GitHub Pages पर होस्ट है; किसी भी वेब अनुरोध की तरह, ये सेवाएँ आपका IP पता प्राप्त करती हैं।</p>`],
+['संपर्क', `<p>किसी त्रुटि की सूचना देने के लिए, या कुछ दोबारा प्रकाशित या रूपांतरित करने से पहले मुझे बताने के लिए, कृपया <a href="${C.issues}" target="_blank" rel="noopener">github.com/zyang398/gis-labs/issues</a> पर एक issue खोलें।</p>`],
+]},
+};
+const HTML_LANG = { en: 'en', zh: 'zh-CN', es: 'es', fr: 'fr', ko: 'ko', hi: 'hi' };
+function applyLang(code) {
+  const t = L[code] || L.en;
+  document.documentElement.lang = HTML_LANG[code] || 'en';
+  document.getElementById('t-h1').textContent = t.h1;
+  document.getElementById('t-back').textContent = t.back;
+  document.getElementById('body').innerHTML = t.s.map(([h, b]) => `<section><h2>${h}</h2>${b}</section>`).join('') + `<p class="note">${t.updated}</p>`;
+  document.getElementById('lang-select').value = code;
+}
+let start = 'en';
+try {
+  const q = new URLSearchParams(location.search).get('lang');
+  const s = q || localStorage.getItem('gis-lang');
+  if (s && L[s]) start = s;
+} catch (e) {}
+applyLang(start);
+document.getElementById('lang-select').addEventListener('change', e => {
+  applyLang(e.target.value);
+  try { localStorage.setItem('gis-lang', e.target.value); } catch (err) {}
+});
+</script>
+</html>

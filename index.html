@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GIS Labs</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+/* Layout: a course track. One band per lecture, numbered because the lectures are taught in order; each band lists its
+   labs in teaching order as link cards. A table of the four lab layers and their coordinate systems closes the page. */
+:root{
+  --bg:#ECEFF3;
+  --surface:#F7F8FA;
+  --ink:#14213A;
+  --ink-2:#505D76;
+  --rule:#CDD3DC;
+  --focus:#2D5BD0;
+  --l1:#0F7F70;
+  --l2:#B07F00;
+  --l3:#5B3FC4;
+  --l4:#C2332C;
+  --glyph-bg:#E3E8EE;
+  --f-display:"Archivo","Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR","Nirmala UI","Kohinoor Devanagari","Noto Sans Devanagari",sans-serif;
+  --f-body:"Source Serif 4",Georgia,"Songti SC","SimSun","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR","Nirmala UI","Kohinoor Devanagari","Noto Sans Devanagari",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR","Nirmala UI","Kohinoor Devanagari","Noto Sans Devanagari",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C131F; --surface:#131C2B; --ink:#E4E9F1; --ink-2:#9DA9BD; --rule:#283449; --focus:#86A6FF;
+    --l1:#3CC7B5; --l2:#F6C232; --l3:#A08BFF; --l4:#FF7A6E; --glyph-bg:#1A2538;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C131F; --surface:#131C2B; --ink:#E4E9F1; --ink-2:#9DA9BD; --rule:#283449; --focus:#86A6FF;
+  --l1:#3CC7B5; --l2:#F6C232; --l3:#A08BFF; --l4:#FF7A6E; --glyph-bg:#1A2538;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--f-display);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:22px 56px;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:30px}
+
+/* header */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:14px 28px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--rule)}
+.top-text{min-width:0;flex:1 1 560px}
+.eyebrow,.k{font-weight:600;font-stretch:112%;letter-spacing:.13em;text-transform:uppercase}
+.eyebrow{margin:0;font-size:12px;color:var(--ink-2)}
+h1{margin:8px 0 12px;font-size:clamp(38px,6vw,68px);font-weight:800;font-stretch:125%;line-height:.96;letter-spacing:-.018em;text-wrap:balance}
+.thesis{margin:0;font-family:var(--f-body);font-size:17.5px;line-height:1.55;color:var(--ink-2);max-width:66ch}
+.lang{appearance:none;-webkit-appearance:none;-moz-appearance:none;margin:0;width:auto;max-width:100%;min-width:0;height:41px;
+  padding:0 36px 0 16px;border:1px solid var(--rule);border-radius:999px;color:var(--ink);font:600 13px/1.45 var(--f-display);cursor:pointer;
+  background-color:var(--surface);
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.lang:hover{border-color:var(--ink-2)}
+html[lang="hi"] h1{line-height:1.22}  /* Devanagari matras need room above the tight display line-height */
+.lang option{color:var(--ink);background-color:var(--surface)}
+
+/* lecture bands */
+.track{display:grid;gap:0}
+.lec{display:grid;grid-template-columns:minmax(0,250px) minmax(0,1fr);gap:16px 32px;padding-block:26px;border-bottom:1px solid var(--rule)}
+.lec:first-child{padding-top:4px}
+.lec-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;align-content:start}
+.lec-no{grid-row:span 2;font-weight:800;font-stretch:125%;font-size:52px;line-height:.9;color:var(--c);font-variant-numeric:tabular-nums}
+.lec-head h2{margin:0;font-size:22px;font-weight:700;font-stretch:108%;line-height:1.15;text-wrap:balance}
+.deck{margin:0;font-family:var(--f-mono);font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}
+.lec-sum{grid-column:1 / -1;margin:6px 0 0;font-family:var(--f-body);font-size:15px;line-height:1.5;color:var(--ink-2)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px;align-content:start;min-width:0}
+.card{
+  display:grid;grid-template-columns:48px minmax(0,1fr);grid-template-rows:auto auto 1fr auto;gap:4px 14px;
+  min-width:0;padding:15px 16px 14px;border:1px solid var(--rule);border-radius:14px;background:var(--surface);
+  color:var(--ink);text-decoration:none;transition:border-color .15s ease,transform .15s ease;
+}
+.card:hover{border-color:var(--c)}
+.card:hover .go{color:var(--c)}
+.card svg{grid-row:1 / span 4;width:48px;height:48px;border-radius:11px;background:var(--glyph-bg)}
+.meta{font-family:var(--f-mono);font-size:11.5px;font-weight:500;color:var(--ink-2)}
+.name{font-size:18.5px;font-weight:700;font-stretch:108%;line-height:1.2}
+.desc{font-family:var(--f-body);font-size:15px;line-height:1.48;color:var(--ink-2)}
+.go{margin-top:6px;font-size:13px;font-weight:700;color:var(--ink);letter-spacing:.02em}
+.card .order{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--c)}
+.g-line{fill:none;stroke:var(--ink-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.g-thin{fill:none;stroke:var(--ink-2);stroke-width:1.2}
+.g-acc{fill:none;stroke:var(--c);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.g-fill{fill:var(--c);stroke:none}
+.g-soft{fill:var(--c);fill-opacity:.22;stroke:var(--c);stroke-width:1.4}
+.g-ink{fill:var(--ink-2);stroke:none}
+
+/* data table */
+.data{display:grid;gap:12px}
+.data h2{margin:0;font-size:24px;font-weight:700;font-stretch:108%}
+.data p{margin:0;font-family:var(--f-body);font-size:16px;line-height:1.55;color:var(--ink-2);max-width:72ch}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:0}
+th{font-size:11.5px;font-weight:600;font-stretch:112%;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+td code{font-family:var(--f-mono);font-size:13px}
+td.crs{font-family:var(--f-mono);font-size:13px}
+footer{font-size:12.5px;line-height:1.55;color:var(--ink-2);max-width:90ch}
+
+@media (max-width:860px){
+  .lec{grid-template-columns:minmax(0,1fr)}
+  .lec-no{font-size:44px}
+}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="top-text">
+      <p class="eyebrow" data-i18n="eyebrow">GIS module</p>
+      <h1 data-i18n="title">GIS Labs</h1>
+      <p class="thesis" data-i18n="thesis">Ten interactive labs and two narrated animations for the four GIS lectures. They run on synthetic crash and curve tables made for these pages, together with the public state routes and Georgia's 159 counties. Open them in lecture order, because the later labs build on the earlier ones.</p>
+    </div>
+    <select class="lang" id="lang-select" aria-label="Language"><option value="en">English</option><option value="zh">中文</option><option value="es">Español</option><option value="fr">Français</option><option value="ko">한국어</option><option value="hi">हिन्दी</option></select>
+  </header>
+
+  <main class="track">
+    <section class="lec" style="--c:var(--l1)" aria-labelledby="h-l1">
+      <div class="lec-head">
+        <span class="lec-no" aria-hidden="true">1</span>
+        <h2 id="h-l1" data-i18n="l1">GIS Basic</h2>
+        <p class="deck">1. GIS Basic 2026.pptx</p>
+        <p class="lec-sum" data-i18n="l1sum">How GIS stores the world and how a classed map can tell different stories from the same numbers.</p>
+      </div>
+      <div class="cards">
+        <a class="card" href="data-model-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path class="g-soft" d="M8 34 L14 14 L23 19 L21 36 Z"/>
+            <g class="g-thin"><rect x="27" y="12" width="7" height="7"/><rect x="34" y="12" width="7" height="7"/><rect x="27" y="19" width="7" height="7"/><rect x="34" y="19" width="7" height="7"/><rect x="27" y="26" width="7" height="7"/><rect x="34" y="26" width="7" height="7"/></g>
+            <rect class="g-fill" x="27" y="19" width="7" height="7"/><rect class="g-fill" x="27" y="26" width="7" height="7"/><rect class="g-fill" x="34" y="26" width="7" height="7"/>
+          </svg>
+          <span class="meta" data-i18n="s-dm">Slides 16–26</span>
+          <span class="name" data-i18n="n-dm">Data Model Lab</span>
+          <span class="desc" data-i18n="d-dm">Switch the lab layers between vector features and raster cells, untick one file of a shapefile to see what breaks, and compare with a file geodatabase.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+        <a class="card" href="classed-map-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="g-fill" x="10" y="10" width="13" height="13" fill-opacity=".25"/>
+            <rect class="g-fill" x="25" y="10" width="13" height="13" fill-opacity=".6"/>
+            <rect class="g-fill" x="10" y="25" width="13" height="13"/>
+            <rect class="g-fill" x="25" y="25" width="13" height="13" fill-opacity=".6"/>
+            <rect class="g-line" x="10" y="25" width="13" height="13" stroke-width="2.4"/>
+          </svg>
+          <span class="meta" data-i18n="s-cm">Slides 42–52</span>
+          <span class="name" data-i18n="n-cm">Classed Map Lab</span>
+          <span class="desc" data-i18n="d-cm">Classify the National Risk Index by county two ways side by side and watch which counties change class when only the method changes.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="lec" style="--c:var(--l2)" aria-labelledby="h-l2">
+      <div class="lec-head">
+        <span class="lec-no" aria-hidden="true">2</span>
+        <h2 id="h-l2" data-i18n="l2">GIS Coordinate System</h2>
+        <p class="deck">2. GIS Coordinate System 2026.pptx</p>
+        <p class="lec-sum" data-i18n="l2sum">First the shape of the Earth and the datum, then how a projection flattens it onto paper.</p>
+      </div>
+      <div class="cards">
+        <a class="card" href="datum-projection-video.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <ellipse class="g-line" cx="24" cy="24" rx="17" ry="14"/>
+            <path class="g-fill" d="M19 16 L32 24 L19 32 Z"/>
+          </svg>
+          <span class="meta" data-i18n="s-an">Narrated · 2 parts, 3:20 and 3:40</span>
+          <span class="name" data-i18n="n-an">From Datum to Projection</span>
+          <span class="desc" data-i18n="d-an">Watch this first. Part 1 builds a datum, from latitude and longitude to the ellipsoid, the geoid and NAD 27, NAD 83 and WGS 84. Part 2 flattens it: projection surfaces, distortion, UTM, State Plane and Georgia Lambert.</span>
+          <span class="go" data-i18n="watch">Watch ↗</span>
+        </a>
+        <a class="card" href="datum-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <ellipse class="g-line" cx="24" cy="24" rx="16" ry="13"/>
+            <path class="g-acc" d="M8 22 C12 14 17 11 22 12 S31 9 35 13 S41 21 40 26 S35 36 28 37 S15 38 11 32 S7 25 8 22 Z"/>
+            <line class="g-thin" x1="24" y1="6" x2="24" y2="42"/><line class="g-thin" x1="4" y1="24" x2="44" y2="24"/>
+          </svg>
+          <span class="meta" data-i18n="s-dt">Slides 2–8</span>
+          <span class="name" data-i18n="n-dt">Datum Lab</span>
+          <span class="desc" data-i18n="d-dt">Exaggerate the ellipsoid and the geoid, fit a local and a geocentric datum, and see how far one point moves between NAD 27, NAD 83 and WGS 84.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+        <a class="card" href="projection-light-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="g-line" cx="18" cy="22" r="11"/>
+            <path class="g-thin" d="M18 22 L41 9 M18 22 L41 22 M18 22 L41 35"/>
+            <line class="g-line" x1="41" y1="6" x2="41" y2="38"/>
+            <circle class="g-fill" cx="18" cy="22" r="3.4"/>
+          </svg>
+          <span class="meta" data-i18n="s-pl">Slides 9–24</span>
+          <span class="name" data-i18n="n-pl">Projection Light Lab</span>
+          <span class="desc" data-i18n="d-pl">Put a lamp inside a glass globe and cast Georgia onto a plane, cylinder or cone, tangent or secant, with UTM and Georgia Lambert presets.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="lec" style="--c:var(--l3)" aria-labelledby="h-l3">
+      <div class="lec-head">
+        <span class="lec-no" aria-hidden="true">3</span>
+        <h2 id="h-l3" data-i18n="l3">GIS Table Operations</h2>
+        <p class="deck">3. GIS Table Operations 2026.pptx</p>
+        <p class="lec-sum" data-i18n="l3sum">Working with one attribute table, then putting two tables together by a key field.</p>
+      </div>
+      <div class="cards">
+        <a class="card" href="attribute-table-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="g-line" x="8" y="10" width="32" height="28" rx="2"/>
+            <line class="g-thin" x1="8" y1="17" x2="40" y2="17"/><line class="g-thin" x1="8" y1="24" x2="40" y2="24"/><line class="g-thin" x1="8" y1="31" x2="40" y2="31"/>
+            <line class="g-thin" x1="19" y1="10" x2="19" y2="38"/>
+            <rect class="g-fill" x="8" y="24" width="32" height="7" fill-opacity=".35"/>
+          </svg>
+          <span class="meta" data-i18n="s-at">Slides 2–15</span>
+          <span class="name" data-i18n="n-at">Attribute Table Lab</span>
+          <span class="desc" data-i18n="d-at">Display XY Data, sort, Select By Attributes, Add Field and Calculate Field, and summary statistics on a synthetic crash table.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+        <a class="card" href="join-relate-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <rect class="g-line" x="6" y="11" width="14" height="26" rx="2"/>
+            <rect class="g-line" x="28" y="11" width="14" height="26" rx="2"/>
+            <path class="g-acc" d="M20 18 C24 18 24 16 28 16 M20 18 C24 18 24 24 28 24 M20 30 C24 30 24 32 28 32"/>
+            <circle class="g-fill" cx="20" cy="18" r="2.2"/><circle class="g-fill" cx="20" cy="30" r="2.2"/>
+          </svg>
+          <span class="meta" data-i18n="s-jr">Slides 16–22</span>
+          <span class="name" data-i18n="n-jr">Join and Relate Lab</span>
+          <span class="desc" data-i18n="d-jr">Join and relate tables by a key field and see how one-to-one, one-to-many, many-to-one and many-to-many decide the rows you get back.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="lec" style="--c:var(--l4)" aria-labelledby="h-l4">
+      <div class="lec-head">
+        <span class="lec-no" aria-hidden="true">4</span>
+        <h2 id="h-l4" data-i18n="l4">GIS Spatial Analysis</h2>
+        <p class="deck">4. GIS Spatial Analysis 2026.pptx</p>
+        <p class="lec-sum" data-i18n="l4sum">Selecting and joining by location, buffers around curves, and the milepoint way of asking the same question.</p>
+      </div>
+      <div class="cards">
+        <a class="card" href="spatial-join-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path class="g-soft" d="M9 14 L27 8 L40 17 L37 37 L17 40 L8 28 Z"/>
+            <circle class="g-ink" cx="18" cy="20" r="2.4"/><circle class="g-ink" cx="27" cy="27" r="2.4"/><circle class="g-ink" cx="20" cy="32" r="2.4"/><circle class="g-ink" cx="31" cy="17" r="2.4"/>
+            <circle class="g-ink" cx="44" cy="40" r="2.4" fill-opacity=".45"/>
+          </svg>
+          <span class="meta" data-i18n="s-sj">Slides 3–6</span>
+          <span class="name" data-i18n="n-sj">Spatial Join Lab</span>
+          <span class="desc" data-i18n="d-sj">Select crashes by location, join them to counties and curves, and check the county written in the crash report against the county on the map.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+        <a class="card" href="buffer-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path class="g-soft" d="M12 33 C12 22 22 14 34 13 C39 13 41 19 36 20 C26 21 19 27 19 33 C19 38 12 38 12 33 Z"/>
+            <path class="g-line" d="M15.5 33 C15.5 24 24 17 35 16.5"/>
+            <circle class="g-ink" cx="22" cy="23" r="2.2"/><circle class="g-ink" cx="38" cy="33" r="2.2" fill-opacity=".45"/>
+          </svg>
+          <span class="meta" data-i18n="s-bf">Slides 7–11 · lab slides 16–19</span>
+          <span class="name" data-i18n="n-bf">Buffer Lab</span>
+          <span class="desc" data-i18n="d-bf">Buffer every District 7 curve by 150 ft, select the crashes inside, and see how the distance, the unit and the end type move the answer.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+        <a class="card" href="spatial-analysis-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <circle class="g-soft" cx="19" cy="20" r="11"/>
+            <rect class="g-line" x="20" y="21" width="18" height="17"/>
+            <path class="g-fill" d="M20 21 H29.95 A11 11 0 0 1 20 30.95 Z"/>
+          </svg>
+          <span class="meta" data-i18n="s-sa">Lecture 4 · eight tools</span>
+          <span class="name" data-i18n="n-sa">Spatial Analysis Lab</span>
+          <span class="desc" data-i18n="d-sa">Try Buffer, Clip, Intersect, Union, Spatial Join, Overlay, Proximity and Network Analysis on the metro Atlanta roads, one tool per tab, and see what each one returns.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+        <a class="card" href="linear-referencing-video.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <line class="g-line" x1="6" y1="34" x2="42" y2="34"/>
+            <path class="g-thin" d="M10 30 V38 M24 30 V38 M38 30 V38"/>
+            <path class="g-fill" d="M19 8 L32 16 L19 24 Z"/>
+          </svg>
+          <span class="meta" data-i18n="s-la">Narrated · 4:26</span>
+          <span class="name" data-i18n="n-la">Linear Referencing</span>
+          <span class="desc" data-i18n="d-la">Watch before the lab. Follows one crash on SR 154 from its route ID and milepoint to a straight-line diagram, then compares milepoint and buffer answers and cuts the route into homogeneous segments.</span>
+          <span class="go" data-i18n="watch">Watch ↗</span>
+        </a>
+        <a class="card" href="linear-referencing-lab.html">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <line class="g-line" x1="6" y1="27" x2="42" y2="27"/>
+            <path class="g-thin" d="M10 23 V31 M18 24.5 V29.5 M26 23 V31 M34 24.5 V29.5 M42 23 V31"/>
+            <line class="g-acc" x1="18" y1="27" x2="30" y2="27" stroke-width="5"/>
+            <path class="g-fill" d="M36 12 L40 18 L36 24 L32 18 Z"/>
+          </svg>
+          <span class="meta" data-i18n="s-lr">Lectures 3–4 · after the buffer</span>
+          <span class="name" data-i18n="n-lr">Linear Referencing Lab</span>
+          <span class="desc" data-i18n="d-lr">Read a GDOT route ID, turn curves and crashes into route events on a straight-line diagram, and compare the milepoint answer with the buffer.</span>
+          <span class="go" data-i18n="open">Open lab ↗</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <section class="data" aria-labelledby="h-data">
+    <h2 id="h-data" data-i18n="dataH">The lab layers</h2>
+    <p data-i18n="dataP">The four layers mirror those of the ArcGIS practice lab, and each one is stored in a different coordinate system. ArcGIS Pro reprojects layers on the fly so they line up on the map. A geoprocessing tool measures in the coordinate system it runs in, which is why the Buffer Lab measures its 150 ft in the curves' State Plane feet.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th data-i18n="thL">Layer</th><th data-i18n="thH">What it holds</th><th data-i18n="thC">Coordinate system</th></tr></thead>
+        <tbody>
+          <tr><td><code>Collision</code></td><td data-i18n="r1">480 synthetic crashes in Georgia, invented by a program for these pages and all dated 12 April 2023, each with a route ID and milepoint in GDOT's format. None is a real crash record</td><td class="crs">WGS 84 (latitude, longitude)</td></tr>
+          <tr><td><code>D7_Curves</code></td><td data-i18n="r2">769 synthetic horizontal curves, detected by a program from the bends in the District 7 state-route centerlines; not an official curve inventory</td><td class="crs">NAD 1983 State Plane Georgia West, US feet</td></tr>
+          <tr><td><code>GeorgiaRoadSegments_SR</code></td><td data-i18n="r3">State-route segments with AADT, lanes and speed limit; the labs use the 5,563 in District 7</td><td class="crs">NAD 1983 Georgia Statewide Lambert, US feet</td></tr>
+          <tr><td><code>GA_Counties</code></td><td data-i18n="r4">Georgia's 159 counties with the FEMA National Risk Index</td><td class="crs">WGS 1984 Web Mercator, metres</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer data-i18n="foot">Each page opens in a new tab, and every page has the same six-language menu. Slide numbers refer to the 2026 decks in the lectures folder. District 7 is GDOT's metro Atlanta district: Clayton, Cobb, DeKalb, Douglas, Fulton and Rockdale counties.</footer>
+</div>
+
+<script>
+const T = {
+  zh: {
+    eyebrow: 'GIS 模块',
+    title: 'GIS 实验室',
+    thesis: '四讲 GIS 课配套的十个交互实验室和两段带配音的动画。它们用的是为这些页面生成的合成事故表和合成弯道表，以及公开的州道路段和佐治亚的 159 个县。请按讲课顺序打开，后面的实验室会用到前面的概念。',
+    l1: 'GIS 基础', l1sum: 'GIS 怎样存储现实世界，以及同一组数字怎样因为分级方法不同而讲出不同的故事。',
+    l2: 'GIS 坐标系统', l2sum: '先讲地球的形状和基准面，再讲投影怎样把它压平到纸上。',
+    l3: 'GIS 表操作', l3sum: '先处理一张属性表，再用关键字段把两张表连起来。',
+    l4: 'GIS 空间分析', l4sum: '按位置选择和连接、弯道缓冲区，以及用里程桩回答同一个问题。',
+    open: '打开实验室 ↗',
+    's-dm': '第 16–26 页', 'n-dm': '数据模型实验室', 'd-dm': '把实验数据在矢量要素和栅格像元之间切换，去掉 shapefile 的某一个文件看看会出什么问题，再和文件地理数据库对比。',
+    's-cm': '第 42–52 页', 'n-cm': '分级地图实验室', 'd-cm': '用两种方法并排给各县的国家风险指数分级，只换方法，看哪些县换了级别。',
+    's-an': '配音动画 · 两部分，3:20 和 3:40', 'n-an': '从基准面到投影', 'd-an': '建议先看。第一部分从经纬度讲到椭球体、大地水准面，以及 NAD 27、NAD 83 和 WGS 84。第二部分把它压平：投影面、变形、UTM、State Plane 和 Georgia Lambert。（配音为英文）', watch: '观看 ↗',
+    's-dt': '第 2–8 页', 'n-dt': '基准面实验室', 'd-dt': '放大椭球体的扁率和大地水准面的起伏，拟合局部基准面和地心基准面，看同一个点在 NAD 27、NAD 83 和 WGS 84 之间移动多远。',
+    's-pl': '第 9–24 页', 'n-pl': '投影灯实验室', 'd-pl': '把灯放进玻璃地球，把佐治亚投到平面、圆柱或圆锥上，可切换相切和相割，含 UTM 和 Georgia Lambert 预设。',
+    's-at': '第 2–15 页', 'n-at': '属性表实验室', 'd-at': '在一张合成事故表上做 Display XY Data、排序、Select By Attributes、Add Field 和 Calculate Field，以及汇总统计。',
+    's-jr': '第 16–22 页', 'n-jr': '连接与关联实验室', 'd-jr': '用关键字段做连接和关联，看一对一、一对多、多对一和多对多怎样决定返回的行。',
+    's-sj': '第 3–6 页', 'n-sj': '空间连接实验室', 'd-sj': '按位置选出事故，把它们连接到县和弯道，再把事故报告里写的县和地图上的县对一对。',
+    's-bf': '第 7–11 页 · 实验课第 16–19 页', 'n-bf': '缓冲区实验室', 'd-bf': '给第 7 区每段弯道做 150 英尺缓冲区，选出里面的事故，看距离、单位和端点类型怎样改变答案。',
+    's-sa': '第 4 讲 · 八种工具', 'n-sa': '空间分析实验室', 'd-sa': '在亚特兰大都市区的道路上试用 Buffer、Clip、Intersect、Union、Spatial Join、Overlay、Proximity 和 Network Analysis，每个标签页一种工具，看看每种工具返回什么。',
+    's-la': '配音动画 · 4:26', 'n-la': '线性参考', 'd-la': '建议在实验室之前看。跟着 SR 154 上的一起事故，从路线编号和里程讲到直线图，再对比里程和缓冲区两种答案，最后把路线切成均质路段。（配音为英文）',
+    's-lr': '第 3–4 讲 · 在缓冲区之后', 'n-lr': '线性参考实验室', 'd-lr': '读懂 GDOT 路线编号，把弯道和事故变成直线图上的路线事件，再把里程的答案和缓冲区的答案对比。',
+    dataH: '实验数据图层',
+    dataP: '四个图层对应 ArcGIS 上机练习里的图层，每个图层的坐标系统都不一样。ArcGIS Pro 会在显示时动态投影，让它们在地图上对齐。地理处理工具则在它运行的坐标系统里量距离，所以缓冲区实验室的 150 英尺是在弯道图层的 State Plane 英尺里量的。',
+    thL: '图层', thH: '内容', thC: '坐标系统',
+    r1: '480 起佐治亚的合成事故，由程序为这些页面虚构，日期都是 2023 年 4 月 12 日，每起都带 GDOT 格式的路线编号和里程。没有一起是真实的事故记录',
+    r2: '769 段合成平曲线，由程序从第 7 区州道中心线的弯折处识别出来；不是官方的弯道清单',
+    r3: '州道路段，带 AADT、车道数和限速；实验室用的是第 7 区的 5,563 段',
+    r4: '佐治亚 159 个县，带 FEMA 国家风险指数',
+    foot: '每个页面都在新标签页打开，所有页面都有同样的六种语言菜单。页码指 lectures 文件夹里 2026 版的课件。第 7 区是 GDOT 的亚特兰大都市区分区：Clayton、Cobb、DeKalb、Douglas、Fulton 和 Rockdale 六个县。',
+  },
+  es: {
+    eyebrow: 'Módulo de GIS',
+    title: 'Laboratorios de GIS',
+    thesis: 'Diez laboratorios interactivos y dos animaciones narradas para las cuatro clases de GIS. Funcionan con tablas sintéticas de choques y de curvas creadas para estas páginas, junto con las rutas estatales públicas y los 159 condados de Georgia. Ábrelos en el orden de las clases, porque los laboratorios posteriores se basan en los anteriores.',
+    l1: 'Fundamentos de GIS', l1sum: 'Cómo GIS almacena el mundo y cómo un mapa por clases puede contar historias distintas con los mismos números.',
+    l2: 'Sistemas de coordenadas en GIS', l2sum: 'Primero la forma de la Tierra y el datum; después, cómo una proyección la aplana sobre el papel.',
+    l3: 'Operaciones con tablas en GIS', l3sum: 'Trabajar con una tabla de atributos y luego unir dos tablas mediante un campo clave.',
+    l4: 'Análisis espacial en GIS', l4sum: 'Seleccionar y unir por ubicación, zonas de influencia (buffers) alrededor de curvas y la forma de plantear la misma pregunta con puntos de milla.',
+    open: 'Abrir laboratorio ↗',
+    's-dm': 'Diapositivas 16–26', 'n-dm': 'Laboratorio de modelos de datos', 'd-dm': 'Cambia las capas del laboratorio entre entidades vectoriales y celdas ráster, desmarca un archivo de un shapefile para ver qué se rompe y compara con una geodatabase de archivos.',
+    's-cm': 'Diapositivas 42–52', 'n-cm': 'Laboratorio de mapas por clases', 'd-cm': 'Clasifica el Índice Nacional de Riesgo por condado de dos maneras, lado a lado, y observa qué condados cambian de clase cuando solo cambia el método.',
+    's-an': 'Narrada · 2 partes, 3:20 y 3:40', 'n-an': 'Del datum a la proyección', 'd-an': 'Mírala primero. La parte 1 construye un datum: de la latitud y la longitud al elipsoide, el geoide y NAD 27, NAD 83 y WGS 84. La parte 2 lo aplana: superficies de proyección, distorsión, UTM, State Plane y Georgia Lambert. (Narración en inglés)', watch: 'Ver ↗',
+    's-dt': 'Diapositivas 2–8', 'n-dt': 'Laboratorio de datum', 'd-dt': 'Exagera el elipsoide y el geoide, ajusta un datum local y uno geocéntrico, y observa cuánto se mueve un mismo punto entre NAD 27, NAD 83 y WGS 84.',
+    's-pl': 'Diapositivas 9–24', 'n-pl': 'Laboratorio de proyección con luz', 'd-pl': 'Coloca una lámpara dentro de un globo de vidrio y proyecta Georgia sobre un plano, un cilindro o un cono, tangente o secante, con ajustes predefinidos de UTM y Georgia Lambert.',
+    's-at': 'Diapositivas 2–15', 'n-at': 'Laboratorio de tabla de atributos', 'd-at': 'Display XY Data, ordenar, Select By Attributes, Add Field y Calculate Field, y estadísticas de resumen sobre una tabla sintética de choques.',
+    's-jr': 'Diapositivas 16–22', 'n-jr': 'Laboratorio de unión y relación', 'd-jr': 'Une y relaciona tablas mediante un campo clave y observa cómo uno a uno, uno a muchos, muchos a uno y muchos a muchos determinan las filas que obtienes.',
+    's-sj': 'Diapositivas 3–6', 'n-sj': 'Laboratorio de unión espacial', 'd-sj': 'Selecciona choques por ubicación, únelos a condados y curvas, y compara el condado escrito en el informe del choque con el condado del mapa.',
+    's-bf': 'Diapositivas 7–11 · diapositivas de laboratorio 16–19', 'n-bf': 'Laboratorio de zonas de influencia', 'd-bf': 'Crea una zona de influencia de 150 ft alrededor de cada curva del Distrito 7, selecciona los choques que quedan dentro y observa cómo la distancia, la unidad y el tipo de extremo cambian la respuesta.',
+    's-sa': 'Clase 4 · ocho herramientas', 'n-sa': 'Laboratorio de análisis espacial', 'd-sa': 'Prueba Buffer, Clip, Intersect, Union, Spatial Join, Overlay, Proximity y Network Analysis en las carreteras del área metropolitana de Atlanta, una herramienta por pestaña, y observa qué devuelve cada una.',
+    's-la': 'Narrada · 4:26', 'n-la': 'Referenciación lineal', 'd-la': 'Mírala antes del laboratorio. Sigue un choque en la SR 154 desde su ID de ruta y su punto de milla hasta un diagrama de línea recta; luego compara las respuestas por punto de milla y por zona de influencia, y divide la ruta en segmentos homogéneos. (Narración en inglés)',
+    's-lr': 'Clases 3–4 · después de la zona de influencia', 'n-lr': 'Laboratorio de referenciación lineal', 'd-lr': 'Lee un ID de ruta del GDOT, convierte curvas y choques en eventos de ruta sobre un diagrama de línea recta y compara la respuesta por punto de milla con la de la zona de influencia.',
+    dataH: 'Las capas del laboratorio',
+    dataP: 'Las cuatro capas reproducen las del laboratorio práctico de ArcGIS, y cada una está almacenada en un sistema de coordenadas distinto. ArcGIS Pro reproyecta las capas al vuelo para que coincidan en el mapa. Una herramienta de geoprocesamiento mide en el sistema de coordenadas en el que se ejecuta; por eso el laboratorio de zonas de influencia mide sus 150 ft en los pies State Plane de las curvas.',
+    thL: 'Capa', thH: 'Contenido', thC: 'Sistema de coordenadas',
+    r1: '480 choques sintéticos en Georgia, inventados por un programa para estas páginas y fechados todos el 12 de abril de 2023, cada uno con un ID de ruta y un punto de milla en el formato del GDOT. Ninguno es un registro real de choque',
+    r2: '769 curvas horizontales sintéticas, detectadas por un programa a partir de los quiebres de los ejes de las rutas estatales del Distrito 7; no son un inventario oficial de curvas',
+    r3: 'Segmentos de rutas estatales con AADT, carriles y límite de velocidad; los laboratorios usan los 5,563 del Distrito 7',
+    r4: 'Los 159 condados de Georgia con el Índice Nacional de Riesgo de FEMA',
+    foot: 'Cada página se abre en una pestaña nueva, y todas las páginas tienen el mismo menú de seis idiomas. Los números de diapositiva corresponden a las presentaciones de 2026 en la carpeta lectures. El Distrito 7 es el distrito metropolitano de Atlanta del GDOT: los condados de Clayton, Cobb, DeKalb, Douglas, Fulton y Rockdale.',
+  },
+  fr: {
+    eyebrow: 'Module GIS',
+    title: 'Labos GIS',
+    thesis: 'Dix labos interactifs et deux animations commentées pour les quatre cours de GIS. Ils utilisent des tables synthétiques d’accidents et de courbes créées pour ces pages, ainsi que les routes d’État publiques et les 159 comtés de la Géorgie. Ouvrez-les dans l’ordre des cours, car les labos suivants s’appuient sur les précédents.',
+    l1: 'Notions de base en GIS', l1sum: 'Comment un GIS représente le monde, et comment une carte par classes peut raconter des histoires différentes avec les mêmes chiffres.',
+    l2: 'Systèmes de coordonnées en GIS', l2sum: 'D’abord la forme de la Terre et le datum, puis la façon dont une projection l’aplatit sur le papier.',
+    l3: 'Opérations sur les tables en GIS', l3sum: 'Travailler avec une table attributaire, puis assembler deux tables par un champ clé.',
+    l4: 'Analyse spatiale en GIS', l4sum: 'Sélectionner et joindre par emplacement, des zones tampons autour des courbes, et la manière de poser la même question par points milliaires.',
+    open: 'Ouvrir le labo ↗',
+    's-dm': 'Diapositives 16–26', 'n-dm': 'Labo Modèles de données', 'd-dm': 'Faites passer les couches du labo d’entités vectorielles en cellules raster, décochez un fichier d’un shapefile pour voir ce qui ne fonctionne plus, et comparez avec une géodatabase fichier.',
+    's-cm': 'Diapositives 42–52', 'n-cm': 'Labo Cartes par classes', 'd-cm': 'Classez l’indice national de risque par comté de deux façons côte à côte, et voyez quels comtés changent de classe quand seule la méthode change.',
+    's-an': 'Commentée · 2 parties, 3:20 et 3:40', 'n-an': 'Du datum à la projection', 'd-an': 'À regarder en premier. La partie 1 construit un datum, de la latitude et la longitude jusqu’à l’ellipsoïde, au géoïde et à NAD 27, NAD 83 et WGS 84. La partie 2 l’aplatit : surfaces de projection, déformation, UTM, State Plane et Georgia Lambert. (Narration en anglais)', watch: 'Regarder ↗',
+    's-dt': 'Diapositives 2–8', 'n-dt': 'Labo Datum', 'd-dt': 'Exagérez l’ellipsoïde et le géoïde, ajustez un datum local et un datum géocentrique, et voyez de combien un même point se déplace entre NAD 27, NAD 83 et WGS 84.',
+    's-pl': 'Diapositives 9–24', 'n-pl': 'Labo Projection lumineuse', 'd-pl': 'Placez une lampe dans un globe de verre et projetez la Géorgie sur un plan, un cylindre ou un cône, tangent ou sécant, avec des préréglages UTM et Georgia Lambert.',
+    's-at': 'Diapositives 2–15', 'n-at': 'Labo Table attributaire', 'd-at': 'Display XY Data, tri, Select By Attributes, Add Field et Calculate Field, et statistiques récapitulatives sur une table synthétique d’accidents.',
+    's-jr': 'Diapositives 16–22', 'n-jr': 'Labo Jointure et relation', 'd-jr': 'Joignez et reliez des tables par un champ clé, et voyez comment un-à-un, un-à-plusieurs, plusieurs-à-un et plusieurs-à-plusieurs déterminent les lignes obtenues.',
+    's-sj': 'Diapositives 3–6', 'n-sj': 'Labo Jointure spatiale', 'd-sj': 'Sélectionnez des accidents par emplacement, joignez-les aux comtés et aux courbes, et comparez le comté inscrit dans le rapport d’accident avec le comté sur la carte.',
+    's-bf': 'Diapositives 7–11 · diapositives du TP 16–19', 'n-bf': 'Labo Zone tampon', 'd-bf': 'Créez une zone tampon de 150 ft autour de chaque courbe du District 7, sélectionnez les accidents à l’intérieur, et voyez comment la distance, l’unité et le type d’extrémité modifient la réponse.',
+    's-sa': 'Cours 4 · huit outils', 'n-sa': 'Labo Analyse spatiale', 'd-sa': 'Essayez Buffer, Clip, Intersect, Union, Spatial Join, Overlay, Proximity et Network Analysis sur les routes de l’agglomération d’Atlanta, un outil par onglet, et voyez ce que renvoie chacun.',
+    's-la': 'Commentée · 4:26', 'n-la': 'Référencement linéaire', 'd-la': 'À regarder avant le labo. Suit un accident sur la SR 154, de son identifiant de route et de son point milliaire jusqu’à un schéma linéaire, puis compare les réponses par point milliaire et par zone tampon, et découpe la route en segments homogènes. (Narration en anglais)',
+    's-lr': 'Cours 3–4 · après la zone tampon', 'n-lr': 'Labo Référencement linéaire', 'd-lr': 'Lisez un identifiant de route du GDOT, transformez courbes et accidents en événements de route sur un schéma linéaire, et comparez la réponse par point milliaire avec celle de la zone tampon.',
+    dataH: 'Les couches du labo',
+    dataP: 'Les quatre couches reprennent celles du TP ArcGIS, et chacune est stockée dans un système de coordonnées différent. ArcGIS Pro reprojette les couches à la volée pour qu’elles se superposent sur la carte. Un outil de géotraitement mesure dans le système de coordonnées dans lequel il s’exécute ; c’est pourquoi le Labo Zone tampon mesure ses 150 ft en pieds State Plane des courbes.',
+    thL: 'Couche', thH: 'Contenu', thC: 'Système de coordonnées',
+    r1: '480 accidents synthétiques en Géorgie, inventés par un programme pour ces pages et tous datés du 12 avril 2023, chacun avec un identifiant de route et un point milliaire au format du GDOT. Aucun n’est un vrai rapport d’accident',
+    r2: '769 courbes horizontales synthétiques, détectées par un programme à partir des inflexions des axes des routes d’État du District 7 ; ce n’est pas un inventaire officiel des courbes',
+    r3: 'Segments de routes d’État avec AADT, nombre de voies et limite de vitesse ; les labos utilisent les 5,563 du District 7',
+    r4: 'Les 159 comtés de la Géorgie avec l’indice national de risque de la FEMA',
+    foot: 'Chaque page s’ouvre dans un nouvel onglet, et toutes les pages ont le même menu à six langues. Les numéros de diapositives renvoient aux présentations 2026 du dossier lectures. Le District 7 est le district de l’agglomération d’Atlanta du GDOT : comtés de Clayton, Cobb, DeKalb, Douglas, Fulton et Rockdale.',
+  },
+  ko: {
+    eyebrow: 'GIS 모듈',
+    title: 'GIS 실습',
+    thesis: '네 번의 GIS 강의를 위한 인터랙티브 실습 10개와 내레이션 애니메이션 2편입니다. 이 페이지들을 위해 만든 합성 교통사고 테이블과 합성 곡선부 테이블, 그리고 공개된 주도(state route)와 조지아주의 159개 카운티를 사용합니다. 뒤의 실습이 앞의 실습을 바탕으로 하므로 강의 순서대로 열어 보세요.',
+    l1: 'GIS 기초', l1sum: 'GIS가 세계를 저장하는 방식과, 단계구분도가 같은 숫자로 서로 다른 이야기를 전하는 방식.',
+    l2: 'GIS 좌표계', l2sum: '먼저 지구의 모양과 데이텀(datum)을, 이어서 투영이 이를 종이 위에 평평하게 펴는 방식을 다룹니다.',
+    l3: 'GIS 테이블 연산', l3sum: '속성 테이블 하나를 다룬 뒤, 키 필드로 두 테이블을 합칩니다.',
+    l4: 'GIS 공간 분석', l4sum: '위치에 의한 선택과 조인, 곡선부 주변의 버퍼, 그리고 같은 질문을 마일포인트로 묻는 방법.',
+    open: '실습 열기 ↗',
+    's-dm': '슬라이드 16–26', 'n-dm': '데이터 모델 실습', 'd-dm': '실습 레이어를 벡터 피처와 래스터 셀 사이에서 전환하고, shapefile의 파일 하나를 체크 해제해 무엇이 깨지는지 확인한 뒤, 파일 지오데이터베이스와 비교합니다.',
+    's-cm': '슬라이드 42–52', 'n-cm': '단계구분도 실습', 'd-cm': '카운티별 국가 위험 지수(National Risk Index)를 두 가지 방법으로 나란히 분류하고, 방법만 바꿨을 때 어떤 카운티의 등급이 바뀌는지 확인합니다.',
+    's-an': '내레이션 · 2부, 3:20 및 3:40', 'n-an': '데이텀에서 투영까지', 'd-an': '가장 먼저 보세요. 1부는 위도·경도에서 타원체, 지오이드, 그리고 NAD 27, NAD 83, WGS 84까지 데이텀을 구성합니다. 2부는 이를 평평하게 폅니다: 투영면, 왜곡, UTM, State Plane, Georgia Lambert. (내레이션은 영어)', watch: '보기 ↗',
+    's-dt': '슬라이드 2–8', 'n-dt': '데이텀 실습', 'd-dt': '타원체와 지오이드를 과장해 보고, 지역 데이텀과 지심 데이텀을 맞춰 본 뒤, 같은 점이 NAD 27, NAD 83, WGS 84 사이에서 얼마나 이동하는지 확인합니다.',
+    's-pl': '슬라이드 9–24', 'n-pl': '투영 조명 실습', 'd-pl': '유리 지구본 안에 램프를 넣어 조지아를 평면, 원통 또는 원뿔에 비춥니다. 접선형과 할선형을 고를 수 있고 UTM과 Georgia Lambert 프리셋이 있습니다.',
+    's-at': '슬라이드 2–15', 'n-at': '속성 테이블 실습', 'd-at': '합성 교통사고 테이블에서 Display XY Data, 정렬, Select By Attributes, Add Field와 Calculate Field, 요약 통계를 다룹니다.',
+    's-jr': '슬라이드 16–22', 'n-jr': '조인과 릴레이트 실습', 'd-jr': '키 필드로 테이블을 조인하고 릴레이트하면서, 일대일, 일대다, 다대일, 다대다 관계가 돌려받는 행을 어떻게 결정하는지 확인합니다.',
+    's-sj': '슬라이드 3–6', 'n-sj': '공간 조인 실습', 'd-sj': '위치로 교통사고를 선택하고, 카운티와 곡선부에 조인한 뒤, 사고 보고서에 적힌 카운티와 지도상의 카운티를 대조합니다.',
+    's-bf': '슬라이드 7–11 · 실습 슬라이드 16–19', 'n-bf': '버퍼 실습', 'd-bf': '7지구의 모든 곡선부에 150 ft 버퍼를 만들고 그 안의 사고를 선택한 뒤, 거리, 단위, 끝 모양 유형이 답을 어떻게 바꾸는지 확인합니다.',
+    's-sa': '강의 4 · 도구 8개', 'n-sa': '공간 분석 실습', 'd-sa': 'Atlanta 대도시권 도로에서 Buffer, Clip, Intersect, Union, Spatial Join, Overlay, Proximity, Network Analysis를 탭마다 하나씩 실행해 보고, 각 도구가 무엇을 돌려주는지 확인합니다.',
+    's-la': '내레이션 · 4:26', 'n-la': '선형 참조', 'd-la': '실습 전에 보세요. SR 154의 사고 하나를 따라 노선 ID와 마일포인트에서 직선 다이어그램까지 이동한 뒤, 마일포인트와 버퍼의 답을 비교하고 노선을 균질 구간으로 나눕니다. (내레이션은 영어)',
+    's-lr': '강의 3–4 · 버퍼 다음', 'n-lr': '선형 참조 실습', 'd-lr': 'GDOT 노선 ID를 읽고, 곡선부와 사고를 직선 다이어그램 위의 노선 이벤트로 바꾼 뒤, 마일포인트의 답을 버퍼의 답과 비교합니다.',
+    dataH: '실습 레이어',
+    dataP: '네 레이어는 ArcGIS 실습의 레이어를 본뜬 것이며, 각각 다른 좌표계로 저장되어 있습니다. ArcGIS Pro는 레이어를 실시간으로 재투영해 지도 위에서 서로 맞춥니다. 지오프로세싱 도구는 자신이 실행되는 좌표계로 측정하므로, 버퍼 실습은 150 ft를 곡선부 레이어의 State Plane 피트로 측정합니다.',
+    thL: '레이어', thH: '내용', thC: '좌표계',
+    r1: '이 페이지들을 위해 프로그램이 만들어 낸 조지아의 합성 교통사고 480건으로, 모두 2023년 4월 12일 날짜이며 각각 GDOT 형식의 노선 ID와 마일포인트가 있습니다. 실제 사고 기록은 하나도 없습니다',
+    r2: '7지구 주도 중심선의 굽은 곳에서 프로그램이 찾아낸 합성 평면 곡선 769개. 공식 곡선부 목록이 아닙니다',
+    r3: 'AADT, 차로 수, 제한 속도가 있는 주도 구간. 실습에서는 7지구의 5,563개를 사용합니다',
+    r4: 'FEMA 국가 위험 지수가 있는 조지아의 159개 카운티',
+    foot: '각 페이지는 새 탭에서 열리며, 모든 페이지에 같은 6개 언어 메뉴가 있습니다. 슬라이드 번호는 lectures 폴더에 있는 2026년 강의 자료를 가리킵니다. 7지구는 GDOT의 Atlanta 대도시권 지구로, Clayton, Cobb, DeKalb, Douglas, Fulton, Rockdale 카운티로 이루어집니다.',
+  },
+  hi: {
+    eyebrow: 'GIS मॉड्यूल',
+    title: 'GIS लैब',
+    thesis: 'GIS के चार लेक्चरों के लिए दस इंटरैक्टिव लैब और नैरेशन वाले दो एनिमेशन। ये इन पेजों के लिए बनाई गई सिंथेटिक दुर्घटना और कर्व टेबलों, सार्वजनिक स्टेट रूटों और जॉर्जिया के 159 काउंटी पर चलते हैं। इन्हें लेक्चर के क्रम में खोलें, क्योंकि बाद की लैब पहले वाली लैब पर आधारित हैं।',
+    l1: 'GIS की बुनियादी बातें', l1sum: 'GIS दुनिया को कैसे संग्रहीत करता है, और एक वर्गीकृत मानचित्र एक ही संख्याओं से अलग-अलग कहानियाँ कैसे कह सकता है।',
+    l2: 'GIS निर्देशांक प्रणाली', l2sum: 'पहले पृथ्वी का आकार और डेटम, फिर प्रोजेक्शन उसे कागज़ पर समतल कैसे करता है।',
+    l3: 'GIS टेबल ऑपरेशन', l3sum: 'एक एट्रिब्यूट टेबल के साथ काम करना, फिर एक की-फ़ील्ड से दो टेबलों को जोड़ना।',
+    l4: 'GIS स्थानिक विश्लेषण', l4sum: 'स्थान के आधार पर चयन और जॉइन, कर्व के चारों ओर बफ़र, और वही प्रश्न माइलपॉइंट के तरीके से पूछना।',
+    open: 'लैब खोलें ↗',
+    's-dm': 'स्लाइड 16–26', 'n-dm': 'डेटा मॉडल लैब', 'd-dm': 'लैब की लेयरों को वेक्टर फ़ीचर और रास्टर सेल के बीच बदलें, shapefile की एक फ़ाइल का निशान हटाकर देखें कि क्या टूटता है, और फ़ाइल जियोडेटाबेस से तुलना करें।',
+    's-cm': 'स्लाइड 42–52', 'n-cm': 'वर्गीकृत मानचित्र लैब', 'd-cm': 'काउंटी के अनुसार राष्ट्रीय जोखिम सूचकांक (National Risk Index) को दो तरीकों से साथ-साथ वर्गीकृत करें, और देखें कि केवल विधि बदलने पर कौन-से काउंटी अपना वर्ग बदलते हैं।',
+    's-an': 'नैरेशन सहित · 2 भाग, 3:20 और 3:40', 'n-an': 'डेटम से प्रोजेक्शन तक', 'd-an': 'इसे सबसे पहले देखें। भाग 1 डेटम बनाता है: अक्षांश और देशांतर से दीर्घवृत्तज, जियोइड और NAD 27, NAD 83 और WGS 84 तक। भाग 2 उसे समतल करता है: प्रोजेक्शन सतहें, विरूपण, UTM, State Plane और Georgia Lambert। (नैरेशन अंग्रेज़ी में है)', watch: 'देखें ↗',
+    's-dt': 'स्लाइड 2–8', 'n-dt': 'डेटम लैब', 'd-dt': 'दीर्घवृत्तज और जियोइड को बढ़ा-चढ़ाकर दिखाएँ, एक स्थानीय और एक भूकेंद्रीय डेटम फ़िट करें, और देखें कि एक ही बिंदु NAD 27, NAD 83 और WGS 84 के बीच कितना खिसकता है।',
+    's-pl': 'स्लाइड 9–24', 'n-pl': 'प्रोजेक्शन लाइट लैब', 'd-pl': 'काँच के ग्लोब के अंदर एक लैंप रखें और जॉर्जिया की छाया समतल, बेलन या शंकु पर डालें, स्पर्शी या छेदक, UTM और Georgia Lambert प्रीसेट के साथ।',
+    's-at': 'स्लाइड 2–15', 'n-at': 'एट्रिब्यूट टेबल लैब', 'd-at': 'एक सिंथेटिक दुर्घटना टेबल पर Display XY Data, सॉर्ट, Select By Attributes, Add Field और Calculate Field, और सारांश आँकड़े।',
+    's-jr': 'स्लाइड 16–22', 'n-jr': 'जॉइन और रिलेट लैब', 'd-jr': 'एक की-फ़ील्ड से टेबलों को जॉइन और रिलेट करें, और देखें कि एक-से-एक, एक-से-अनेक, अनेक-से-एक और अनेक-से-अनेक संबंध कैसे तय करते हैं कि कौन-सी पंक्तियाँ वापस मिलेंगी।',
+    's-sj': 'स्लाइड 3–6', 'n-sj': 'स्पैशियल जॉइन लैब', 'd-sj': 'स्थान के आधार पर दुर्घटनाएँ चुनें, उन्हें काउंटी और कर्व से जॉइन करें, और दुर्घटना रिपोर्ट में लिखे काउंटी की तुलना मानचित्र पर दिखे काउंटी से करें।',
+    's-bf': 'स्लाइड 7–11 · लैब स्लाइड 16–19', 'n-bf': 'बफ़र लैब', 'd-bf': 'डिस्ट्रिक्ट 7 के हर कर्व के चारों ओर 150 ft का बफ़र बनाएँ, उसके अंदर की दुर्घटनाएँ चुनें, और देखें कि दूरी, इकाई और सिरे का प्रकार उत्तर को कैसे बदलते हैं।',
+    's-sa': 'लेक्चर 4 · आठ टूल', 'n-sa': 'स्थानिक विश्लेषण लैब', 'd-sa': 'मेट्रो Atlanta की सड़कों पर Buffer, Clip, Intersect, Union, Spatial Join, Overlay, Proximity और Network Analysis आज़माएँ, हर टैब में एक टूल, और देखें कि हर टूल क्या लौटाता है।',
+    's-la': 'नैरेशन सहित · 4:26', 'n-la': 'रेखीय संदर्भन', 'd-la': 'लैब से पहले देखें। SR 154 पर एक दुर्घटना को उसकी रूट ID और माइलपॉइंट से स्ट्रेट-लाइन डायग्राम तक ले जाता है, फिर माइलपॉइंट और बफ़र के उत्तरों की तुलना करता है और रूट को समरूप खंडों में काटता है। (नैरेशन अंग्रेज़ी में है)',
+    's-lr': 'लेक्चर 3–4 · बफ़र के बाद', 'n-lr': 'रेखीय संदर्भन लैब', 'd-lr': 'GDOT रूट ID पढ़ें, कर्व और दुर्घटनाओं को स्ट्रेट-लाइन डायग्राम पर रूट इवेंट में बदलें, और माइलपॉइंट वाले उत्तर की तुलना बफ़र वाले उत्तर से करें।',
+    dataH: 'लैब की लेयरें',
+    dataP: 'चारों लेयरें ArcGIS अभ्यास लैब की लेयरों जैसी हैं, और हर एक अलग निर्देशांक प्रणाली में संग्रहीत है। ArcGIS Pro लेयरों को तुरंत (on the fly) रीप्रोजेक्ट करता है ताकि वे मानचित्र पर एक-दूसरे से मेल खाएँ। जियोप्रोसेसिंग टूल उसी निर्देशांक प्रणाली में मापता है जिसमें वह चलता है, इसीलिए बफ़र लैब अपने 150 ft को कर्व लेयर के State Plane फ़ीट में मापती है।',
+    thL: 'लेयर', thH: 'इसमें क्या है', thC: 'निर्देशांक प्रणाली',
+    r1: 'जॉर्जिया की 480 सिंथेटिक दुर्घटनाएँ, जिन्हें एक प्रोग्राम ने इन पेजों के लिए गढ़ा है, सभी 12 अप्रैल 2023 की तारीख़ वाली, हर एक के साथ GDOT प्रारूप की रूट ID और माइलपॉइंट। इनमें से कोई भी असली दुर्घटना रिकॉर्ड नहीं है',
+    r2: 'डिस्ट्रिक्ट 7 के स्टेट-रूट की मध्य-रेखाओं के मोड़ों से एक प्रोग्राम द्वारा पहचाने गए 769 सिंथेटिक क्षैतिज कर्व; यह कोई आधिकारिक कर्व इन्वेंटरी नहीं है',
+    r3: 'AADT, लेन और गति सीमा वाले स्टेट-रूट खंड; लैब डिस्ट्रिक्ट 7 के 5,563 खंड इस्तेमाल करती हैं',
+    r4: 'FEMA राष्ट्रीय जोखिम सूचकांक के साथ जॉर्जिया के 159 काउंटी',
+    foot: 'हर पेज नए टैब में खुलता है, और हर पेज में वही छह भाषाओं वाला मेनू है। स्लाइड नंबर lectures फ़ोल्डर की 2026 की प्रस्तुतियों के हैं। डिस्ट्रिक्ट 7, GDOT का मेट्रो Atlanta डिस्ट्रिक्ट है: Clayton, Cobb, DeKalb, Douglas, Fulton और Rockdale काउंटी।',
+  },
+  en: {},
+};
+const LANGS = ['en', 'zh', 'es', 'fr', 'ko', 'hi'];
+const HTML_LANG = { en: 'en', zh: 'zh-CN', es: 'es', fr: 'fr', ko: 'ko', hi: 'hi' };
+const els = [...document.querySelectorAll('[data-i18n]')];
+for (const el of els) T.en[el.dataset.i18n] = el.innerHTML;
+const langSel = document.getElementById('lang-select');
+function applyLang(lang) {
+  if (!LANGS.includes(lang)) lang = 'en';
+  const D = T[lang] || {};
+  for (const el of els) { const v = D[el.dataset.i18n] ?? T.en[el.dataset.i18n]; if (v != null) el.innerHTML = v; }
+  document.documentElement.lang = HTML_LANG[lang];
+  langSel.value = lang;
+}
+langSel.addEventListener('change', () => {
+  const lang = LANGS.includes(langSel.value) ? langSel.value : 'en';
+  applyLang(lang);
+  try { localStorage.setItem('gis-lang', lang); } catch (e) {}
+});
+function startLang() {
+  try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS.includes(q)) return q; } catch (e) {}
+  for (const k of ['gis-lang', 'gis-hub-lang']) { try { const v = localStorage.getItem(k); if (LANGS.includes(v)) return v; } catch (e) {} }
+  return 'en';
+}
+applyLang(startLang());
+</script>
+
+<p class="site-terms" style="max-width:1180px;margin:28px auto 8px;padding:0 16px;text-align:center;font:13px/1.5 system-ui,sans-serif;opacity:.72"><span></span> · <a href="about.html" style="color:inherit"></a> · © 2026 Zhongyu Yang</p>
+<script>
+(() => {
+  const T = {
+    en: ['Personal, non-commercial teaching project. Synthetic data, for learning only.', 'About and terms of use'],
+    zh: ['个人非商业教学项目。合成数据，仅供学习。', '关于与使用条款'],
+    es: ['Proyecto docente personal y sin fines comerciales. Datos sintéticos, solo para aprender.', 'Acerca de y condiciones de uso'],
+    fr: ['Projet pédagogique personnel et non commercial. Données synthétiques, pour apprendre uniquement.', 'À propos et conditions d’utilisation'],
+    ko: ['개인적·비상업적 교육 프로젝트입니다. 합성 데이터이며 학습용입니다.', '소개 및 이용 약관'],
+    hi: ['निजी, गैर-व्यावसायिक शिक्षण परियोजना। सिंथेटिक डेटा, केवल सीखने के लिए।', 'परिचय और उपयोग की शर्तें'],
+  };
+  const el = document.currentScript.previousElementSibling;
+  const set = () => { const t = T[(document.documentElement.lang || 'en').slice(0, 2)] || T.en; el.firstChild.textContent = t[0]; el.children[1].textContent = t[1]; };
+  set();
+  new MutationObserver(set).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+})();
+</script>
+</html>
